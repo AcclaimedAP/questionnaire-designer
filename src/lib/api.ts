@@ -1,3 +1,5 @@
+import mockApi from "@/mocks/api";
+
 interface ApiConfig {
   baseUrl: string;
   headers: Record<string, string>;
@@ -60,13 +62,12 @@ class Api {
     });
 
     try {
-      const fetchPromise = fetch(`${this.config.baseUrl}${url}`, options);
+      const fetchPromise = this.fetch(url, options);
       const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log(response);
       return await response.json();
     } catch (error) {
       if (error instanceof Error) {
@@ -79,10 +80,17 @@ class Api {
   setHeaders(headers: Record<string, string>) {
     this.config.headers = headers;
   }
+
+  private async fetch(url: string, options: RequestInit) {
+    if (!import.meta.env.PROD || import.meta.env.DISABLE_MOCKS) {
+      return mockApi(url);
+    }
+    return fetch(`${this.config.baseUrl}${url}`, options);
+  }
 }
 
 const api = new Api({
-  baseUrl: 'http://localhost:5173',
+  baseUrl: import.meta.env.API_URL || 'http://localhost:5173',
   headers: {},
   timeout: 5000
 });

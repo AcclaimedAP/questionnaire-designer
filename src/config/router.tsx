@@ -7,8 +7,7 @@ import { FormShow } from '@/views/Form/Show'
 import { FormCreate } from '@/views/Form/Create'
 import { FormUpdate } from '@/views/Form/Update'
 
-
-export const router = createBrowserRouter([
+const routes = [
   {
     path: '/',
     element: <BaseLayout />,
@@ -35,4 +34,6 @@ export const router = createBrowserRouter([
       },
     ],
   },
-] satisfies RouteObject[])
+] satisfies RouteObject[]
+
+export const router = createBrowserRouter(routes)
