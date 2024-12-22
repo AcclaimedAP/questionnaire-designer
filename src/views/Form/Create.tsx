@@ -1,3 +1,5 @@
+import { FormBuilder } from "@/features/forms/components/FormBuilder";
+
 /**
  * Form create page.
  * Allows the user to create a new form.
@@ -5,8 +7,10 @@
 
 export const FormCreate = () => {
   return (
-    <div>
-      <h1>Create form</h1>
+    <div className="border-2 border-gray-400">
+      <FormBuilder />
     </div>
   )
 }
+
+export default FormCreate;

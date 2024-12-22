@@ -30,10 +30,11 @@ export class FormFactory {
     return this;
   }
 
-  public addCheckboxField(label: string) {
+  public addCheckboxField(label: string, options: string[]) {
     this.addField({
       type: FormFieldType.CHECKBOX,
-      label
+      label,
+      options
     });
     return this;
   }
