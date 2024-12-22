@@ -16,6 +16,11 @@ export class FormFactory {
     this.form.title = title;
     return this;
   }
+  
+  public setRandomTitle() {
+    this.form.title = this.randomTitle();
+    return this;
+  }
 
   public addTextField(label: string) {
     this.addField({
@@ -62,10 +67,37 @@ export class FormFactory {
   public build(): Form {
     this.id++;
     this.form.id = this.id;
-    return this.form;
+    const builtForm = this.form;
+    this.resetForm();
+    return builtForm;
   }
 
   private addField(field: FormField) {
     this.form.fields.push(field);
   }
+
+
+
+  private resetForm() {
+    this.form = {
+      id: this.id,
+      title: 'Test Form',
+      fields: []
+    }
+  }
+
+  private randomTitle = () => {
+    const titles = [
+      'Test form',
+      'Employee survey',
+      'Customer feedback',
+      'Product survey',
+      'Employee survey',
+      'Customer feedback',
+      'Product survey',
+    ]
+    return titles[Math.floor(Math.random() * titles.length)];
+  }
+  
 }
+

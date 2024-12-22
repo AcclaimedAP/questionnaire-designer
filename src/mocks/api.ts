@@ -6,7 +6,7 @@ const formFactory = new FormFactory();
 const forms = (count: number) => {
   const forms: Form[] = [];
   for (let i = 0; i < count; i++) {
-    forms.push(formFactory.setTitle(`Form ${i}`).addTextField('Name').addCheckboxField('Checkbox').addDropdownField('Dropdown', ['Option 1', 'Option 2', 'Option 3']).addRadioField('Radio', ['Option 1', 'Option 2', 'Option 3']).addDatePickerField('Date Picker').build());
+    forms.push(formFactory.setRandomTitle().addTextField('Name').addCheckboxField('Checkbox').addDropdownField('Dropdown', ['Option 1', 'Option 2', 'Option 3']).addRadioField('Radio', ['Option 1', 'Option 2', 'Option 3']).addDatePickerField('Date Picker').build());
   }
   return forms;
 }
