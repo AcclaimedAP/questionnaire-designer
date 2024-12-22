@@ -5,10 +5,9 @@ export const Header = () => {
   const items = [
     { label: 'Home', href: '/' },
     {
-      label: 'dropdown test', href: '/dropdown-test', children: [
-        { label: 'dropdown test 1', href: '/dropdown-test/1' },
-        { label: 'dropdown test 2', href: '/dropdown-test/2' },
-        { label: 'dropdown test 3', href: '/dropdown-test/3' },
+      label: 'Forms', href: '/form', children: [
+        { label: 'All forms', href: '/form' },
+        { label: 'Create form', href: '/form/create' },
       ]
     },
     { label: 'About', href: '/about' },

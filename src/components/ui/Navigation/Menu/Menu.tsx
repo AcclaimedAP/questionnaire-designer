@@ -36,12 +36,12 @@ const MenuDropdown = ({ label, children }: Partial<MenuItem>) => {
     setIsOpen(!isOpen)
   }
 
-  return <Button className='flex flex-col gap-2 relative w-32 text-center bg-background hover:brightness-125 p-2' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={toggleDropdown}>
+  return <Button className='flex flex-col relative w-32 text-center bg-background hover:brightness-125' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={toggleDropdown}>
     <span>{label}</span>
-    {isOpen && <div className='flex flex-col gap-2 absolute top-full left-0 bg-background p-2'>{children?.map((child, index) => <MenuDropdownItem key={`${label}-${index}`} {...child} />)}</div>}
+    {isOpen && <div className='flex flex-col w-32 absolute top-full left-0 bg-background'>{children?.map((child, index) => <MenuDropdownItem key={`${label}-${index}`} {...child} />)}</div>}
   </Button>
 }
 
 const MenuDropdownItem = ({ label, href }: MenuItem) => {
-  return <Link to={href}>{label}</Link>
+  return <Link to={href} className='w-full text-center bg-background hover:brightness-125 p-2'>{label}</Link>
 }
