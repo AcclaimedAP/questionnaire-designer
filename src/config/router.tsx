@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router'
 import { Home } from '@views/Home'
-import { BaseLayout } from '@components/layout/BaseLayout'
+import { BaseLayout } from '@/views/layouts/BaseLayout'
 import type { RouteObject } from 'react-router'
 
 export const router = createBrowserRouter([
