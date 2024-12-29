@@ -53,8 +53,11 @@ export const FormIndex = () => {
 
   return (
     <>
-      <div>
-        <h1>All forms</h1>
+      <div className='flex flex-row justify-between items-center gap-4 mb-4'>
+        <h1 className='text-2xl font-bold'>All forms</h1>
+        <Link to='/form/create' className='border-2 border-border rounded-md px-2 py-1 hover:bg-border'>
+          Create new form
+        </Link>
       </div>
       <Table columns={columns} data={forms} hover={true} loading={loading} error={error} />
     </>

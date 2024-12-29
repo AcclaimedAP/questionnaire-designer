@@ -5,13 +5,9 @@ export const Header = () => {
   const items = [
     { label: 'Home', href: '/' },
     {
-      label: 'Forms', href: '/form', children: [
-        { label: 'All forms', href: '/form' },
-        { label: 'Create form', href: '/form/create' },
-      ]
+      label: 'See all forms', href: '/form'
     },
-    { label: 'About', href: '/about' },
-    { label: 'Contact', href: '/contact' },
+    { label: 'Create form', href: '/form/create' }
   ] satisfies MenuItem[]
 
   return (
