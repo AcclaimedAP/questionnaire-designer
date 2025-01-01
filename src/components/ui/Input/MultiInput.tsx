@@ -2,7 +2,7 @@
 import { HtmlHTMLAttributes } from "react";
 
 
-export const MultiInput = ({ type, label, options, value, onChange, ...props }: { type: string, label: string, options: string[], value: string[], onChange: (e: React.ChangeEvent<HTMLInputElement>) => void } & HtmlHTMLAttributes<HTMLDivElement>) => {
+export const MultiInput = ({ type, label, options, value, onChange, ...props }: { type: string, label: string, options: string[], value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void } & HtmlHTMLAttributes<HTMLDivElement>) => {
   return <div className="flex flex-col gap-2">
     <label>{label}</label>
     {options.map((option, index) => {
