@@ -1,4 +1,4 @@
-import { FormBuilder } from "@/features/forms/components/FormBuilder";
+import { FormBuilder } from "@/features/forms/FormBuilder";
 
 /**
  * Form create page.

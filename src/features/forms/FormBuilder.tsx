@@ -1,6 +1,6 @@
 import { Form } from "@/types/models/form";
-import { FormEditor } from "./FormEditor";
-import { FormPreview } from "./FormPreview";
+import { FormEditor } from "./components/FormEditor/FormEditor";
+import { FormPreview } from "./components/FormPreview";
 import { useState } from "react";
 import { FormFactory } from "@/mocks/formFactory";
 
