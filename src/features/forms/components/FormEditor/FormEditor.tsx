@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { TextInput } from "@/components/ui/Input";
+import { TextArea } from "@/components/ui/Input";
 import { Form, FormField, FormFieldType } from "@/types/models/form";
 import { useState } from "react";
 import { Dropdown } from "@/components/ui/Input";
@@ -41,11 +41,11 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
     const temp = newFields[index];
     newFields[index] = newFields[index + (direction === "up" ? -1 : 1)];
     newFields[index + (direction === "up" ? -1 : 1)] = temp;
-    setFields(newFields);
     updateForm({ ...form, fields: newFields });
+    setFields(newFields);
   }
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTitle(e.target.value);
     updateForm({ ...form, title: e.target.value });
   }
@@ -54,9 +54,8 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
     <div className="flex flex-col gap-4 w-full p-4">
       <h1 className="text-2xl font-bold" onClick={() => { console.log(fields) }}>Form Editor</h1>
       <div className="flex flex-col gap-4">
-        <TextInput
+        <TextArea
           className="bg-background text-foreground text-xl border-2 border-border placeholder:text-foreground/50"
-          type={"text"}
           value={title}
           onChange={handleTitleChange}
           placeholder="Form title"
@@ -73,127 +72,136 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
 }
 
 const Field = ({ field, index, maxIndex, updateField, removeField, moveField }: { field: FormField, index: number, maxIndex: number, updateField: (index: number, field: FormField) => void, removeField: (index: number) => void, moveField: (index: number, direction: "up" | "down") => void }) => {
-
-  const [label, setLabel] = useState(field.label);
-  const [type, setType] = useState(field.type);
-  const [options, setOptions] = useState(field.options || []);
-
-  const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLabel(e.target.value);
+  const handleLabelChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     updateField(index, { ...field, label: e.target.value });
   }
 
   const addOption = () => {
-    setOptions([...options, '']);
-    updateField(index, { ...field, options: [...options, ''] });
+    updateField(index, { ...field, options: [...(field.options || []), ''] });
   }
 
   const removeOption = (optionIndex: number) => {
-    const newOptions = options.filter((_, i) => i !== optionIndex);
-    setOptions(newOptions);
+    const newOptions = field.options?.filter((_, i) => i !== optionIndex) || [];
     updateField(index, { ...field, options: newOptions });
   }
 
   const handleOptionsChange = (optionIndex: number, label: string) => {
-    const newOptions = options.map((option, i) => i === optionIndex ? label : option);
-    setOptions(newOptions);
+    const newOptions = field.options?.map((option, i) => i === optionIndex ? label : option) || [];
     updateField(index, { ...field, options: newOptions });
   }
 
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value as FormFieldType);
     updateField(index, { ...field, type: e.target.value as FormFieldType });
   }
 
-  return <div className="flex flex-row gap-4 justify-between border-2 border-border rounded-md p-4">
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-row gap-2 justify-between">
-        <label className="text-lg font-bold">
-          {type.toString().charAt(0).toUpperCase() + type.toString().slice(1)} Input index:{index}
-        </label>
-        <div className="flex flex-row gap-2">
-          <Dropdown
-            className="bg-background text-foreground border-2 border-border"
-            options={Object.values(FormFieldType).map(type => type.toString())}
-            value={type.toString()}
-            onChange={handleTypeChange}
-          />
-          <Button
-            className="w-8 h-8 p-0 flex items-center justify-center bg-error hover:bg-error-hover"
-            onClick={() => { removeField(index) }}
-          >
-            <img src={XMarkIcon} alt="Close" className="w-4 h-4" />
-          </Button>
+  const moveOption = (optionIndex: number, direction: "up" | "down") => {
+    if (!field.options) return;
+    if (optionIndex === 0 && direction === "up") return;
+    if (optionIndex === field.options.length - 1 && direction === "down") return;
+
+    const newOptions = [...field.options];
+    const temp = newOptions[optionIndex];
+    newOptions[optionIndex] = newOptions[optionIndex + (direction === "up" ? -1 : 1)];
+    newOptions[optionIndex + (direction === "up" ? -1 : 1)] = temp;
+    updateField(index, { ...field, options: newOptions });
+  }
+
+  return <>
+    <div className="flex flex-col gap-4 justify-between border-2 border-border rounded-md p-4">
+      <div className="flex flex-row gap-4 justify-between items-center">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-row gap-2 justify-between">
+            <label className="text-lg font-bold">
+              {field.type.toString().charAt(0).toUpperCase() + field.type.toString().slice(1)} Input
+            </label>
+            <div className="flex flex-row gap-2">
+              <Dropdown
+                className="bg-background text-foreground border-2 border-border"
+                options={Object.values(FormFieldType).map(type => type.toString())}
+                value={field.type.toString()}
+                onChange={handleTypeChange}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 justify-between">
+            <TextArea
+              className="bg-background text-foreground border-2 border-border placeholder:text-foreground/50"
+              value={field.label}
+              onChange={handleLabelChange}
+              placeholder="Form label"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 items-center">
+          <RemoveButton HandleClick={() => { removeField(index) }} />
+          <MoveControls handleMove={moveField} index={index} maxIndex={maxIndex} />
         </div>
       </div>
-      <div className="flex flex-col gap-2 justify-between">
-        <TextInput
-          className="bg-background text-foreground border-2 border-border placeholder:text-foreground/50"
-          type={"text"}
-          value={label}
-          onChange={handleLabelChange}
-          placeholder="Form label"
-        />
-        {(type === FormFieldType.RADIO || type === FormFieldType.CHECKBOX || type === FormFieldType.DROPDOWN) &&
-          <div className="flex flex-col gap-2">
-            <label className="text-lg">Options</label>
-            {options.map((option, index) => {
-              return <OptionInput key={index} label={option} value={option} index={index} onChange={handleOptionsChange} removeOption={removeOption} />
-            })}
-            <Button
-              className="w-8 h-8 p-0 flex items-center justify-center bg-primary hover:bg-primary-hover"
-              onClick={addOption}>
-              <img src={PlusIcon} alt="Add" className="w-4 h-4" />
-            </Button>
-          </div>
-        }
-      </div>
+
+      {(field.type === FormFieldType.RADIO || field.type === FormFieldType.CHECKBOX || field.type === FormFieldType.DROPDOWN) &&
+        <div className="flex flex-col gap-2">
+          <label className="text-lg">Options</label>
+          {field.options && field.options.map((option, index) => {
+            return <OptionInput key={index} option={option} index={index} maxIndex={field.options ? field.options.length - 1 : 0} onChange={handleOptionsChange} removeOption={removeOption} moveOption={moveOption} />
+          })}
+          <Button
+            className="w-8 h-8 p-0 flex items-center justify-center bg-primary hover:bg-primary-hover"
+            onClick={addOption}>
+            <img src={PlusIcon} alt="Add" className="w-4 h-4" />
+          </Button>
+        </div>
+      }
     </div>
-    <MoveControls moveField={moveField} index={index} maxIndex={maxIndex} />
-  </div>
+  </>
 }
 
-const OptionInput = ({ label, value, index, onChange, removeOption }: { label: string, value: string, index: number, onChange: (index: number, label: string) => void, removeOption: (index: number) => void }) => {
-  const [option, setOption] = useState(value);
+const OptionInput = ({ option, index, maxIndex, onChange, removeOption, moveOption }: { option: string, index: number, maxIndex: number, onChange: (index: number, label: string) => void, removeOption: (index: number) => void, moveOption: (index: number, direction: "up" | "down") => void }) => {
 
-  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOption(e.target.value);
+  const handleOptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(index, e.target.value);
   }
 
-
-  return <div className="flex flex-row gap-2">
-    <TextInput
+  return <div className="flex flex-row gap-4 items-center w-full">
+    <TextArea
       className="bg-background w-full text-foreground border-2 border-border placeholder:text-foreground/50"
-      type={"text"} value={option} onChange={handleOptionChange} placeholder={label} />
-    <Button
-      className="w-8 h-8 p-0 flex items-center justify-center bg-error hover:bg-error-hover"
-      onClick={() => { removeOption(index) }}
-    >
-      <img src={XMarkIcon} alt="Close" className="w-4 h-4" />
-    </Button>
+      value={option}
+      rows={3}
+      onChange={handleOptionChange}
+      placeholder={`Option ${index + 1}`}
+    />
+    <MoveControls handleMove={moveOption} index={index} maxIndex={maxIndex} />
+    <RemoveButton HandleClick={() => { removeOption(index) }} />
   </div>
 }
 
 
-const MoveControls = ({ moveField, index, maxIndex }: { moveField: (index: number, direction: "up" | "down") => void, index: number, maxIndex: number }) => {
-  const buttonClass = "w-8 h-8 p-0 flex items-center justify-center bg-secondary hover:bg-secondary-hover disabled:bg-secondary-disabled disabled:hover:bg-secondary-disabled disabled:cursor-not-allowed";
+const MoveControls = ({ handleMove, index, maxIndex }: { handleMove: (index: number, direction: "up" | "down") => void, index: number, maxIndex: number }) => {
+  const buttonClass = "w-8 h-8 p-0 flex items-center justify-center bg-secondary hover:bg-secondary-hover disabled:bg-secondary-disabled disabled:hover:bg-secondary-disabled disabled:cursor-not-allowed active:bg-secondary-active";
   return <>
     <div className="flex flex-col gap-2">
       <Button
         disabled={index === 0}
         className={buttonClass}
-        onClick={() => { moveField(index, "up") }}
+        onClick={() => { handleMove(index, "up") }}
       >
         <img src={UpArrowIcon} alt="Up" className="w-4 h-4" />
       </Button>
       <Button
         disabled={index === maxIndex}
         className={buttonClass}
-        onClick={() => { moveField(index, "down") }}
+        onClick={() => { handleMove(index, "down") }}
       >
         <img src={DownArrowIcon} alt="Down" className="w-4 h-4" />
       </Button>
     </div>
   </>
+}
+
+const RemoveButton = ({ HandleClick }: { HandleClick: () => void }) => {
+  return <Button
+    className="w-8 h-8 p-0 flex items-center justify-center bg-error hover:bg-error-hover"
+    onClick={() => { HandleClick() }}
+  >
+    <img src={XMarkIcon} alt="Remove" className="w-4 h-4" />
+  </Button>
 }
