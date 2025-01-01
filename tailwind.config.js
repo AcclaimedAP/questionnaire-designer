@@ -10,16 +10,16 @@ export default {
         "background": "#1c1c1c",
         "text": "#ffffff",
         "primary": {
-          "default": "#6900cc",
+          "DEFAULT": "#6900cc",
           "hover": "#7900d9",
           "active": "#8900e6",
           "disabled": "#9900f3"
         },
         "secondary": {
-          "default": "#c4a300",
+          "DEFAULT": "#c4a300",
           "hover": "#d4b300",
           "active": "#e4c300",
-          "disabled": "#f4d300"
+          "disabled": "#4D4A38"
         },
         "border": "#454545",
         "error": "#ff0000",
