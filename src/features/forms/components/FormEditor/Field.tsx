@@ -1,10 +1,10 @@
-import { FormField, FormFieldType } from "@/types/models/form";
-import { TextArea } from "@/components/ui/Input";
-import { Dropdown } from "@/components/ui/Input";
+import { FormField, FormFieldSettings, FormFieldType, FreeTextSettings } from "@/types/models/form";
+import { Dropdown, Input } from "@/components/ui/Input";
 import { useCallback } from "react";
 import { FieldOptions } from "./FieldOptions";
 import { MoveControls } from "./controls/MoveControls";
 import { RemoveButton } from "./controls/RemoveButton";
+import { FieldSettings } from "./FieldSettings";
 
 interface FieldProps {
   field: FormField;
@@ -31,6 +31,10 @@ export const Field = ({
     updateField(index, { ...field, type: e.target.value as FormFieldType });
   }, [field, index, updateField]);
 
+  const updateFieldSettings = useCallback((settings: FormFieldSettings | FreeTextSettings) => {
+    updateField(index, { ...field, settings });
+  }, [field, index, updateField]);
+
   return (
     <div className="flex flex-col gap-4 justify-between border-2 border-border rounded-md p-4">
       <div className="flex flex-row gap-4 justify-between items-center">
@@ -41,7 +45,7 @@ export const Field = ({
             </label>
             <div className="flex flex-row gap-2">
               <Dropdown
-                className="bg-background text-foreground border-2 border-border"
+                className="bg-background text-foreground border-2 border-border p-1"
                 options={Object.values(FormFieldType).map(type => type.toString())}
                 value={field.type.toString()}
                 onChange={handleTypeChange}
@@ -49,8 +53,9 @@ export const Field = ({
             </div>
           </div>
           <div className="flex flex-col gap-2 justify-between">
-            <TextArea
-              className="bg-background text-foreground border-2 border-border placeholder:text-foreground/50"
+            <Input
+              type="textarea"
+              className="bg-background text-foreground border-2 border-border placeholder:text-foreground/50 p-1"
               value={field.label}
               onChange={handleLabelChange}
               placeholder="Form label"
@@ -62,6 +67,7 @@ export const Field = ({
           <MoveControls handleMove={moveField} index={index} maxIndex={maxIndex} />
         </div>
       </div>
+      <FieldSettings type={field.type} settings={field.settings} updateSettings={updateFieldSettings} />
 
       {(field.type === FormFieldType.RADIO ||
         field.type === FormFieldType.CHECKBOX ||

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/Button";
-import { TextArea } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
 import { Form, FormField, FormFieldType } from "@/types/models/form";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Field } from "./Field";
 
 export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form: Form) => void }) => {
   const [title, setTitle] = useState(form?.title || '');
-  const [fields, setFields] = useState(form?.fields || []);
+  const [fields, setFields] = useState<FormField[]>(form?.fields || []);
   const isInitialMount = useRef(true);
 
   useEffect(() => {
@@ -18,9 +18,13 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
   }, [title, fields]);
 
   const addField = useCallback(() => {
-    const newField = {
+    const newField: FormField = {
       label: '',
       type: FormFieldType.TEXT,
+      settings: {
+        required: false,
+        placeholder: ''
+      },
       options: []
     }
     setFields(prev => [...prev, newField]);
@@ -60,7 +64,8 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
     <div className="flex flex-col gap-4 w-full p-4">
       <h1 className="text-2xl font-bold">Form Editor</h1>
       <div className="flex flex-col gap-4">
-        <TextArea
+        <Input
+          type="textarea"
           className="bg-background text-foreground text-xl border-2 border-border placeholder:text-foreground/50"
           value={title}
           onChange={handleTitleChange}

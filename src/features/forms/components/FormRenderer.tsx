@@ -1,5 +1,5 @@
 import { Form, FormField, FormFieldType } from "@/types/models/form";
-import { TextInput, MultiInput, Dropdown } from "@/components/ui/Input";
+import { Input, MultiInput, Dropdown } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { memo, useState } from 'react';
 
@@ -30,7 +30,7 @@ const FormFieldRenderer = memo(({ field }: { field: FormField }) => {
     return (
       <InputContainer>
         <label>{field.label}</label>
-        <TextInput
+        <Input
           type={field.type}
           value={value}
           onChange={handleChange}

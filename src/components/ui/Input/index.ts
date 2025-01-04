@@ -1,4 +1,4 @@
-export * from './TextInput';
-export * from './TextArea';
 export * from './MultiInput';
 export * from './Dropdown';
+export * from './Checkbox';
+export * from './Input';

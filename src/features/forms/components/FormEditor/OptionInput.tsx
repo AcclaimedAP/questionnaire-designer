@@ -1,4 +1,4 @@
-import { TextArea } from "@/components/ui/Input";
+import { Input } from "@/components/ui/Input";
 import { MoveControls } from "./controls/MoveControls";
 import { RemoveButton } from "./controls/RemoveButton";
 
@@ -19,16 +19,16 @@ export const OptionInput = ({
   removeOption,
   moveOption
 }: OptionInputProps) => {
-  const handleOptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(index, e.target.value);
   };
 
   return (
     <div className="flex flex-row gap-4 items-center w-full">
-      <TextArea
-        className="bg-background w-full text-foreground border-2 border-border placeholder:text-foreground/50"
+      <Input
+        type="text"
+        className="bg-background w-full text-foreground border-2 border-border placeholder:text-foreground/50 p-1"
         value={option}
-        rows={3}
         onChange={handleOptionChange}
         placeholder={`Option ${index + 1}`}
       />

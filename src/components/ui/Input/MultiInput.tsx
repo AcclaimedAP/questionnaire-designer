@@ -9,7 +9,7 @@ export const MultiInput = ({ type, label, options, value, onChange, ...props }: 
       return (
         <div key={index} className="flex flex-row gap-2">
           <input type={type} value={option} name={label} onChange={onChange} {...props} />
-          <label>{option}</label>
+          <label htmlFor={label}>{option}</label>
         </div>
       )
     })}
