@@ -20,8 +20,9 @@ export const FormIndex = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get<{ forms: Form[] }>('/api/forms');
-        setForms(response.data.forms);
+        const response = await api.get<Form[]>('/api/forms');
+        //console.log(response);
+        setForms(response.data);
       } catch (error) {
         console.error(error);
         setError('Failed to fetch forms');

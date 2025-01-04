@@ -21,7 +21,7 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
     if (type === FormFieldType.TEXT) {
       updateSettings({
         ...settings,
-        minLength: e.target.value || null
+        min: e.target.value || null
       } as FreeTextSettings);
     }
   };
@@ -29,7 +29,7 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
   const handleMaxLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateSettings({
       ...settings,
-      maxLength: e.target.value || null
+      max: e.target.value || null
     } as FreeTextSettings);
   };
 
@@ -91,11 +91,11 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
               />
             </div>}
             <div className="flex flex-col gap-2 items-center">
-              <label className="text-sm">Limit Input between</label>
+              <label className="text-sm">Is between</label>
               <div className="flex flex-row gap-2 items-center">
                 <Input
                   type="number"
-                  value={(settings as FreeTextSettings).minLength}
+                  value={(settings as FreeTextSettings).min}
                   onChange={handleMinLengthChange}
                   placeholder="min"
                   className="w-20 bg-background text-foreground border-2 border-border placeholder:text-foreground/50 p-1"
@@ -103,7 +103,7 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
                 <span className="text-sm">and</span>
                 <Input
                   type="number"
-                  value={(settings as FreeTextSettings).maxLength}
+                  value={(settings as FreeTextSettings).max}
                   onChange={handleMaxLengthChange}
                   placeholder="max"
                   className="w-20 bg-background text-foreground border-2 border-border placeholder:text-foreground/50 p-1"

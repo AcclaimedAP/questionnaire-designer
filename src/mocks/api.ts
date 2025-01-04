@@ -1,57 +1,69 @@
-import { Form } from '@/types/models/form';
-import { FormFactory } from './formFactory';
+import MockDb from './db';
 
-const formFactory = new FormFactory();
-
-const forms = (count: number) => {
-  const forms: Form[] = [];
-  for (let i = 0; i < count; i++) {
-    forms.push(formFactory.setRandomTitle().addTextField('Name').addCheckboxField('Checkbox').addDropdownField('Dropdown', ['Option 1', 'Option 2', 'Option 3']).addRadioField('Radio', ['Option 1', 'Option 2', 'Option 3']).addDatePickerField('Date Picker').build());
-  }
-  return forms;
-}
-
-const mockApi = async (route: string) => {
+const mockApi = async (route: string, options: RequestInit) => {
   if (import.meta.env.PROD) {
     throw new Error('Mock API is only available in development and test environments')
   }
   const delay = () => new Promise(resolve => setTimeout(resolve, import.meta.env.MOCK_DELAY || 1000));
   await delay();
+  const db = new MockDb();
+  const routeParts = route.split('/');
+  const lastPart = routeParts[routeParts.length - 1];
+  if (options.method !== "GET" ) {
+    switch (options.method) {
+      case 'POST':
+        if (!options.body) {
+          return errorResponse(400, 'Body is required');
+        }
+        return successResponse(201, db.create(lastPart, options.body))
+        
+      case 'PUT':
+        if (!options.body) {
+          return errorResponse(400, 'Body is required');
+        }
+        return successResponse(200, db.update(routeParts[routeParts.length - 2], parseInt(lastPart), options.body))
+        
+      case 'DELETE':
+        return successResponse(200, db.delete(routeParts[routeParts.length - 2], parseInt(lastPart)))
+      
+      default:
+        return errorResponse(405, 'Method not allowed');
+    }
+  } else if (!isNaN(parseInt(lastPart))) {
+    return successResponse(200, db.find(routeParts[routeParts.length - 2], parseInt(lastPart)))
+  } 
   switch (route) {
     case '/api/ping':
-      return new Response(JSON.stringify({
-        data: {
-          message: 'pong'
-        }
-      }), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      return successResponse(200, {
+        message: 'pong'
       })
     case '/api/forms':
-      return new Response(JSON.stringify({
-        data: {
-          forms: forms(10)
-        }
-      }), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      return successResponse(200, db.where('forms'))
     default:
-      return new Response(JSON.stringify({
-        error: 'Not found'
-      }), {
-        status: 404,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      return errorResponse(404, 'Not found')
   }
 }
 
+const errorResponse = (status: number, message: string) => {
+  return new Response(JSON.stringify({
+    error: message
+  }), {
+    status: status,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
 
+const successResponse = (status: number, data: any) => {
+  return new Response(JSON.stringify({
+    data: data
+  }), {
+    status: status,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
 
 export default mockApi;

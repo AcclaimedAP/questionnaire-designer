@@ -83,7 +83,7 @@ class Api {
 
   private async fetch(url: string, options: RequestInit) {
     if (!import.meta.env.PROD || import.meta.env.DISABLE_MOCKS) {
-      return mockApi(url);
+      return mockApi(url, options);
     }
     return fetch(`${this.config.baseUrl}${url}`, options);
   }

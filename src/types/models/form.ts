@@ -43,10 +43,20 @@ export interface TextFormField extends Omit<FormField, 'settings'> {
 }
 
 export interface FreeTextSettings extends FormFieldSettings {
-  inputType: "text" | "textarea" | "number" | "tel" | "email" | "password" | "url";
+  inputType: FreeTextSettingsInputType;
   rows: number | null;
-  minLength: number | null;
-  maxLength: number | null;
+  min: number | null;
+  max: number | null;
+}
+
+export enum FreeTextSettingsInputType {
+  TEXT = 'text',
+  TEXTAREA = 'textarea',
+  NUMBER = 'number',
+  TEL = 'tel',
+  EMAIL = 'email',
+  PASSWORD = 'password',
+  URL = 'url'
 }
 
 // ===================================

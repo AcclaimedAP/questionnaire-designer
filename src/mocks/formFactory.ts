@@ -1,4 +1,4 @@
-import { Form, FormField, FormFieldType } from '@/types/models/form';
+import { Form, FormFieldType, FormFieldSettings, FreeTextSettings, FormFields, FreeTextSettingsInputType } from '@/types/models/form';
 
 export class FormFactory {
   private form: Form;
@@ -22,45 +22,69 @@ export class FormFactory {
     return this;
   }
 
-  public addTextField(label: string) {
+  public addTextField(label: string, settings: FreeTextSettings = {
+    required: false,
+    placeholder: "Input a placeholder",
+    inputType: FreeTextSettingsInputType.TEXT,
+    rows: null,
+    min: null,
+    max: null
+  }) {
     this.addField({
       type: FormFieldType.TEXT,
-      label
+      label,
+      settings
     });
     return this;
   }
 
-  public addCheckboxField(label: string, options: string[]) {
+  public addCheckboxField(label: string, options: string[], settings: FormFieldSettings = {
+    required: false,
+    placeholder: "Select an option"
+  }) {
     this.addField({
       type: FormFieldType.CHECKBOX,
       label,
-      options
+      options,
+      settings
     });
     return this;
   }
 
-  public addDropdownField(label: string, options: string[]) {
+  public addDropdownField(label: string, options: string[], settings: FormFieldSettings = {
+    required: false,
+    placeholder: "Select an option"
+  }) {
     this.addField({
       type: FormFieldType.DROPDOWN,
       label,
-      options
+      options,
+      settings
     });
     return this;
   }
 
-  public addRadioField(label: string, options: string[]) {
+  public addRadioField(label: string, options: string[], settings: FormFieldSettings = {
+    required: false,
+    placeholder: "Select an option"
+  }) {
     this.addField({
       type: FormFieldType.RADIO,
       label,
-      options
+      options,
+      settings
     });
     return this;
   }
 
-  public addDatePickerField(label: string) {
+  public addDatePickerField(label: string, settings: FormFieldSettings = {
+    required: false,
+    placeholder: "Select a date"
+  }) {
     this.addField({
       type: FormFieldType.DATE_PICKER,
-      label
+      label,
+      settings
     });
     return this;
   }
@@ -73,7 +97,7 @@ export class FormFactory {
     return builtForm;
   }
 
-  private addField(field: FormField) {
+  private addField(field: FormFields) {
     this.form.fields.push(field);
   }
 
