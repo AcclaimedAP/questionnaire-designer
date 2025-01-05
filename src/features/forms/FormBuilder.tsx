@@ -30,7 +30,6 @@ export const FormBuilder = () => {
   useEffect(() => {
     if (id) {
       api.get<Form>(`/api/forms/${id}`).then((form) => {
-        console.log(form);
         setFormData(form.data);
       });
     }

@@ -11,7 +11,7 @@ interface ApiResponse<T> {
   error: string | null;
 }
 
-class Api {
+export class Api {
   private config: ApiConfig;
 
   constructor(config: ApiConfig) {
@@ -89,7 +89,7 @@ class Api {
   }
 }
 
-const api = new Api({
+export const api = new Api({
   baseUrl: import.meta.env.API_URL || 'http://localhost:5173',
   headers: {},
   timeout: 5000

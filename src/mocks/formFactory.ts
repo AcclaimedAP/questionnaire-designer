@@ -2,11 +2,9 @@ import { Form, FormFieldType, FormFieldSettings, FreeTextSettings, FormFields, F
 
 export class FormFactory {
   private form: Form;
-  private id: number;
   constructor() {
-    this.id = 0;
     this.form = {
-      id: this.id,
+      id: null,
       title: 'Test Form',
       fields: []
     }
@@ -16,7 +14,7 @@ export class FormFactory {
     this.form.title = title;
     return this;
   }
-  
+
   public setRandomTitle() {
     this.form.title = this.randomTitle();
     return this;
@@ -89,9 +87,12 @@ export class FormFactory {
     return this;
   }
 
+  public setId(id: number | null) {
+    this.form.id = id;
+    return this;
+  }
+
   public build(): Form {
-    this.id++;
-    this.form.id = this.id;
     const builtForm = this.form;
     this.resetForm();
     return builtForm;
@@ -105,7 +106,7 @@ export class FormFactory {
 
   private resetForm() {
     this.form = {
-      id: this.id,
+      id: null,
       title: 'Test Form',
       fields: []
     }
@@ -123,6 +124,6 @@ export class FormFactory {
     ]
     return titles[Math.floor(Math.random() * titles.length)];
   }
-  
+
 }
 

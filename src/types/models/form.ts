@@ -1,5 +1,5 @@
 export interface Form {
-  id: number;
+  id: number | null;
   title: string;
   fields: FormField[];
 }

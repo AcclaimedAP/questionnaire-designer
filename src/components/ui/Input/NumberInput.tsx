@@ -1,6 +1,6 @@
 import { HtmlHTMLAttributes } from "react";
 export type NumberInputProps = {
-  value: number | null;
+  value: string | number | null;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
 } & HtmlHTMLAttributes<HTMLInputElement>;
