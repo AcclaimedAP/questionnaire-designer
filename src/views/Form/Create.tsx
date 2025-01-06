@@ -7,7 +7,7 @@ import { FormBuilder } from "@/features/forms/FormBuilder";
 
 export const FormCreate = () => {
   return (
-    <div className="border-2 border-gray-400">
+    <div className="">
       <FormBuilder />
     </div>
   )

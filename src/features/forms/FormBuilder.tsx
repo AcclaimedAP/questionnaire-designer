@@ -1,19 +1,18 @@
 import { Form } from "@/types/models/form";
 import { FormEditor } from "./components/FormEditor/FormEditor";
 import { FormPreview } from "./components/FormPreview";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { FormFactory } from "@/mocks/formFactory";
 import { useParams } from "react-router";
 import api from "@/lib/api";
+import { LoadSpinner } from '@/components/ui/Loader';
 
 export const FormBuilder = () => {
   const { id } = useParams();
-  const initialForm = useMemo(() => {
-    const formFactory = new FormFactory();
-    return formFactory.setRandomTitle().build();
-  }, []);
 
-  const [formData, setFormData] = useState<Form>(initialForm);
+  const [formData, setFormData] = useState<Form | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const updateForm = useCallback((form: Form) => {
     setFormData(form);
@@ -28,24 +27,44 @@ export const FormBuilder = () => {
   }, [formData, id]);
 
   useEffect(() => {
-    if (id) {
-      api.get<Form>(`/api/forms/${id}`).then((form) => {
+    const fetchFormData = async () => {
+      if (formData) return;
+      if (!id) {
+        const formFactory = new FormFactory();
+        setFormData(formFactory.setRandomTitle().build());
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        setError(null);
+        const form = await api.get<Form>(`/api/forms/${id}`);
         setFormData(form.data);
-      });
+      } catch (error) {
+        console.error(error);
+        setError('No form with this id found');
+      } finally {
+        setLoading(false);
+      }
     }
+    fetchFormData();
   }, [id]);
 
-  return (
+  return (<>
     <div className="flex flex-col gap-4 justify-center items-center">
-      <div className="flex flex-row justify-between items-start gap-4 w-full p-4 divide-x-2 divide-border">
-        <FormEditor form={formData} updateForm={updateForm} />
-        <FormPreview form={formData} />
-      </div>
-      <div>
-        <button onClick={() => handleSave()}
-          className="bg-primary text-white px-4 py-2 rounded-md m-4"
-        >Save</button>
-      </div>
+      {formData ? <>
+        <div className="flex flex-row justify-between items-start gap-4 w-full p-4 divide-x-2 divide-border fade-in">
+          <FormEditor form={formData} updateForm={updateForm} />
+          <FormPreview form={formData} />
+        </div>
+        <div>
+          <button onClick={() => handleSave()}
+            className="bg-primary text-white px-4 py-2 rounded-md m-4"
+          >Save</button>
+        </div>
+      </> : error ? <div className="text-red-500">{error}</div> : null}
     </div>
+    {loading && <div className="flex flex-col gap-4 items-center justify-center inset-0 bg-background/50 w-screen h-screen fixed z-50"><LoadSpinner /></div>}
+  </>
   );
 };

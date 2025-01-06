@@ -27,7 +27,6 @@ class MockDb {
   public where(table: string, query?: { id?: number, title?: string }) {
     const databaseTable = this.db[table as keyof MockDbTable] || [];
     if (!databaseTable) throw new Error(`Table ${table} not found`);
-    console.log(databaseTable.records);
     if (!query) return databaseTable.records;
     return databaseTable.records.filter((item) => {
       if (query.id && item.id === query.id) return true;
@@ -59,7 +58,9 @@ class MockDb {
     if (!databaseTable) throw new Error(`Table ${table} not found`);
     const index = databaseTable.records.findIndex((item) => item.id === id);
     if (index === -1) throw new Error(`Item with id ${id} not found`);
-    databaseTable.records[index] = item;
+    const validatedItem = this.validate(table, JSON.parse(item || '{}'));
+    if (!validatedItem) throw new Error(`Item ${item} is not valid`);
+    databaseTable.records[index] = validatedItem;
     this.db[table as keyof MockDbTable] = databaseTable;
     this.saveDatabase();
     return item;
@@ -118,7 +119,7 @@ class MockDb {
  * Cleans the form data of any invalid or unnecessary fields
  */
 
-const formValidation = (form: Form): (false | Form)=> {
+const formValidation = (form: Form): (false | Form) => {
   const { title, fields } = form;
   if (!title) return false;
   if (!fields || fields.length === 0) return false;
