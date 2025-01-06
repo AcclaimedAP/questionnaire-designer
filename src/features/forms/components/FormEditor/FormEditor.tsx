@@ -33,6 +33,9 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
   const updateField = useCallback((index: number, field: FormField) => {
     setFields(prev => {
       const newFields = prev.map((f, i) => i === index ? field : f);
+      if ((field.type === FormFieldType.CHECKBOX || field.type === FormFieldType.RADIO || field.type === FormFieldType.DROPDOWN) && field.options?.length === 0) {
+        newFields[index].options = ["Option 1"];
+      }
       return newFields;
     });
   }, []);

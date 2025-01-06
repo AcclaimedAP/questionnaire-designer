@@ -58,7 +58,7 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
         />
         <label className="text-sm" htmlFor="required">Mandatory?</label>
       </div>
-      <div className="flex flex-col gap-2">
+      {type !== FormFieldType.CHECKBOX && <div className="flex flex-col gap-2">
         <label className="text-sm" htmlFor="placeholder">Placeholder</label>
         <Input
           type="text"
@@ -67,7 +67,7 @@ export const FieldSettings = ({ type, settings, updateSettings }: FieldSettingsP
           placeholder="Input a placeholder"
           className="bg-background text-foreground border-2 border-border placeholder:text-foreground/50 p-1"
         />
-      </div>
+      </div>}
       {type === FormFieldType.TEXT && (
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2 items-center justify-between">

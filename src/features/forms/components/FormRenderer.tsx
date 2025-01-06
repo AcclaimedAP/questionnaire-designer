@@ -37,7 +37,7 @@ const SingleInputField = memo(({ field }: { field: FormField }) => {
 
   return (<>
     <InputContainer>
-      <label>{field.label}</label>
+      <label className="text-lg">{field.label}</label>
       {field.type === FormFieldType.TEXT && <Input
         type={field.type}
         value={value}
@@ -77,7 +77,7 @@ const MultiInputField = memo(({ field }: { field: FormField }) => {
 
   return (
     <InputContainer>
-      <label>{field.label}</label>
+      <label className="text-lg">{field.label}</label>
       <MultiInput
         type={field.type}
         label={field.label}
@@ -92,7 +92,7 @@ const MultiInputField = memo(({ field }: { field: FormField }) => {
 
 
 const InputContainer = memo(({ children }: { children: React.ReactNode }) => (
-  <div className="flex flex-col gap-2 p-4">
+  <div className="flex flex-col gap-4 p-2 py-4">
     {children}
   </div>
 ));
