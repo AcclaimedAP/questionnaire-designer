@@ -2,6 +2,7 @@ import { Form, FormField, FormFieldType } from "@/types/models/form";
 import { Input, MultiInput, Dropdown } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { memo, useState } from 'react';
+import { cn } from "@/utils/cn";
 
 export const FormRenderer = memo(({ form }: { form: Form }) => {
   return (
@@ -20,6 +21,7 @@ export const FormRenderer = memo(({ form }: { form: Form }) => {
 
 const FormFieldRenderer = memo(({ field }: { field: FormField }) => {
   const [value, setValue] = useState("");
+  const classes = "bg-background border-2 border-border p-2";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -33,8 +35,8 @@ const FormFieldRenderer = memo(({ field }: { field: FormField }) => {
           type={field.type}
           value={value}
           onChange={handleChange}
-          placeholder={""}
-          className="bg-background text-foreground border-2 border-border p-2"
+          placeholder={field.settings.placeholder}
+          className={cn(classes, "text-foreground")}
         />
       </InputContainer>
     );
@@ -47,8 +49,9 @@ const FormFieldRenderer = memo(({ field }: { field: FormField }) => {
         <Dropdown
           options={field.options || []}
           value={value}
+          placeholder={field.settings.placeholder}
           onChange={handleChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}
-          className="bg-background text-foreground border-2 border-border p-2"
+          className={cn(classes, value === "" ? "text-text/50" : "text-text")}
         />
       </InputContainer>
     );
