@@ -24,10 +24,9 @@ export const FormBuilder = () => {
   const handleSubmit = useCallback(async () => {
     try {
       setIsSaving(true);
-      console.log(formData);
       const response = await handleSave();
-      console.log(response);
-      navigate(`/form/${id}`);
+      if (response?.data)
+        await navigate(`/form/${id}`);
     } catch (error) {
       console.error(error);
       setError('Failed to save form');
@@ -37,15 +36,10 @@ export const FormBuilder = () => {
   }, [formData]);
 
   const handleSave = useCallback(async () => {
-    try {
-      if (id) {
-        return await api.put(`/api/forms/${id}`, formData);
-      } else {
-        return await api.post(`/api/forms`, formData);
-      }
-    } catch (error) {
-      console.error(error);
-      setError('Failed to save form');
+    if (id) {
+      return await api.put(`/api/forms/${id}`, formData);
+    } else {
+      return await api.post(`/api/forms`, formData);
     }
   }, [formData, id]);
 
@@ -75,6 +69,7 @@ export const FormBuilder = () => {
 
   return (<>
     <div className="flex flex-col gap-4 justify-center items-center">
+      {error && <div className="text-red-500">{error}</div>}
       {formData ? <>
         <div className="flex flex-row justify-between items-start gap-4 w-full p-4 divide-x-2 divide-border fade-in">
           <FormEditor form={formData} updateForm={updateForm} />
@@ -85,7 +80,7 @@ export const FormBuilder = () => {
             className="bg-primary text-white px-4 py-2 rounded-md m-4 disabled:bg-primary/50 disabled:text-white/50"
           >{isSaving ? 'Saving...' : 'Save'}</button>
         </div>
-      </> : error ? <div className="text-red-500">{error}</div> : null}
+      </> : null}
     </div>
     {loading && <div className="flex flex-col gap-4 items-center justify-center inset-0 bg-background/50 w-screen h-screen fixed z-50"><LoadSpinner /></div>}
   </>
