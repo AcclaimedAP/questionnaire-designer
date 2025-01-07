@@ -6,7 +6,9 @@ export class FormFactory {
     this.form = {
       id: null,
       title: 'Test Form',
-      fields: []
+      fields: [],
+      createdAt: null,
+      updatedAt: null
     }
   }
 
@@ -94,6 +96,8 @@ export class FormFactory {
 
   public build(): Form {
     const builtForm = this.form;
+    builtForm.createdAt = new Date();
+    builtForm.updatedAt ?? new Date();
     this.resetForm();
     return builtForm;
   }
@@ -108,6 +112,8 @@ export class FormFactory {
     this.form = {
       id: null,
       title: 'Test Form',
+      createdAt: null,
+      updatedAt: null,
       fields: []
     }
   }

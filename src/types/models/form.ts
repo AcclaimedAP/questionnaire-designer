@@ -1,6 +1,8 @@
 export interface Form {
   id: number | null;
   title: string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
   fields: FormField[];
 }
 

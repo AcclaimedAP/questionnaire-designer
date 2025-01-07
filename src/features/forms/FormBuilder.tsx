@@ -6,23 +6,46 @@ import { FormFactory } from "@/mocks/formFactory";
 import { useParams } from "react-router";
 import api from "@/lib/api";
 import { LoadSpinner } from '@/components/ui/Loader';
+import { useNavigate } from "react-router";
+
 
 export const FormBuilder = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const updateForm = useCallback((form: Form) => {
     setFormData(form);
   }, []);
 
-  const handleSave = useCallback(() => {
-    if (id) {
-      api.put(`/api/forms/${id}`, formData);
-    } else {
-      api.post(`/api/forms`, formData);
+  const handleSubmit = useCallback(async () => {
+    try {
+      setIsSaving(true);
+      console.log(formData);
+      const response = await handleSave();
+      console.log(response);
+      navigate(`/form/${id}`);
+    } catch (error) {
+      console.error(error);
+      setError('Failed to save form');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [formData]);
+
+  const handleSave = useCallback(async () => {
+    try {
+      if (id) {
+        return await api.put(`/api/forms/${id}`, formData);
+      } else {
+        return await api.post(`/api/forms`, formData);
+      }
+    } catch (error) {
+      console.error(error);
+      setError('Failed to save form');
     }
   }, [formData, id]);
 
@@ -58,9 +81,9 @@ export const FormBuilder = () => {
           <FormPreview form={formData} />
         </div>
         <div>
-          <button onClick={() => handleSave()}
-            className="bg-primary text-white px-4 py-2 rounded-md m-4"
-          >Save</button>
+          <button disabled={isSaving} onClick={() => handleSubmit()}
+            className="bg-primary text-white px-4 py-2 rounded-md m-4 disabled:bg-primary/50 disabled:text-white/50"
+          >{isSaving ? 'Saving...' : 'Save'}</button>
         </div>
       </> : error ? <div className="text-red-500">{error}</div> : null}
     </div>

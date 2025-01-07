@@ -46,7 +46,7 @@ class MockDb {
     if (!databaseTable) throw new Error(`Table ${table} not found`);
     const validatedItem = this.validate(table, JSON.parse(item || '{}'));
     if (!validatedItem) throw new Error(`Item ${item} is not valid`);
-    const newItem = { ...validatedItem as any, id: databaseTable.records.length + 1 };
+    const newItem = { ...validatedItem as any, id: databaseTable.records.length + 1, createdAt: new Date(), updatedAt: new Date() };
     databaseTable.records.push(newItem);
     this.db[table as keyof MockDbTable] = databaseTable;
     this.saveDatabase();
@@ -60,7 +60,7 @@ class MockDb {
     if (index === -1) throw new Error(`Item with id ${id} not found`);
     const validatedItem = this.validate(table, JSON.parse(item || '{}'));
     if (!validatedItem) throw new Error(`Item ${item} is not valid`);
-    databaseTable.records[index] = validatedItem;
+    databaseTable.records[index] = { ...validatedItem as any, updatedAt: new Date(), createdAt: databaseTable.records[index].createdAt || new Date() };
     this.db[table as keyof MockDbTable] = databaseTable;
     this.saveDatabase();
     return item;

@@ -1,10 +1,15 @@
 import { Form, FormField, FormFieldType } from "@/types/models/form";
 import { Input, MultiInput, Dropdown } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { cn } from "@/utils/cn";
 
-export const FormRenderer = memo(({ form }: { form: Form }) => {
+export const FormRenderer = memo(({ form, isPreview }: { form: Form, isPreview: boolean }) => {
+
+  const isDisabled = useMemo(() => {
+    return isPreview;
+  }, [isPreview]);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-2xl font-bold">{form.title}</h1>
@@ -12,7 +17,7 @@ export const FormRenderer = memo(({ form }: { form: Form }) => {
         {form.fields.map((field, index) => (
           <FormFieldRenderer field={field} key={index} />
         ))}
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-full border-2 border-border rounded-md hover:bg-border disabled:bg-border disabled:text-text/50" disabled={isDisabled}>Submit</Button>
       </form>
     </div>
   );
