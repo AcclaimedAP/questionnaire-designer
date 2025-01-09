@@ -119,13 +119,19 @@ class MockDb {
  * Cleans the form data of any invalid or unnecessary fields
  */
 
-const formValidation = (form: Form): (false | Form) => {
-  const { title, fields } = form;
-  if (!title) return false;
-  if (!fields || fields.length === 0) return false;
-  const cleanedForm: Form = { ...form, fields: [] };
+interface FormValidation extends Form {
+  args: {
+    manualSave: boolean;
+  }
+}
+
+const formValidation = (form: FormValidation): (false | Form) => {
+  const { title, fields, args } = form;
+  if (args?.manualSave && !title) return false;
+  if (args?.manualSave && (!fields || fields.length === 0)) return false;
+  const cleanedForm: Form = { title, fields: [], id: form.id, createdAt: form.createdAt, updatedAt: form.updatedAt, published: form.published };
   for (const field of fields) {
-    if (!field.label) return false;
+    if (args?.manualSave && !field.label) return false;
     if (!Object.values(FormFieldType).includes(field.type)) return false;
     if (!field.settings) return false;
     if (field.type === FormFieldType.TEXT) {
@@ -149,8 +155,8 @@ const formValidation = (form: Form): (false | Form) => {
       continue;
     }
     if ([FormFieldType.CHECKBOX, FormFieldType.DROPDOWN, FormFieldType.RADIO].includes(field.type)) {
-      if (!field.options || field.options.length === 0) return false;
-      for (const option of field.options) {
+      if (args?.manualSave && (!field.options || field.options.length === 0)) return false;
+      for (const option of field.options || []) {
         if (option === '') return false;
       }
       const settings: FormFieldSettings = {
@@ -166,7 +172,7 @@ const formValidation = (form: Form): (false | Form) => {
       continue;
     }
   }
-  return form;
+  return cleanedForm;
 }
 
 const isNumber = (value: any) => {

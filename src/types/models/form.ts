@@ -3,6 +3,7 @@ export interface Form {
   title: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+  published: boolean;
   fields: FormField[];
 }
 

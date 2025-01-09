@@ -9,29 +9,29 @@ const mockApi = async (route: string, options: RequestInit) => {
   const db = new MockDb();
   const routeParts = route.split('/');
   const lastPart = routeParts[routeParts.length - 1];
-  if (options.method !== "GET" ) {
+  if (options.method !== "GET") {
     switch (options.method) {
       case 'POST':
         if (!options.body) {
           return errorResponse(400, 'Body is required');
         }
         return successResponse(201, db.create(lastPart, options.body))
-        
+
       case 'PUT':
         if (!options.body) {
           return errorResponse(400, 'Body is required');
         }
         return successResponse(200, db.update(routeParts[routeParts.length - 2], parseInt(lastPart), options.body))
-        
+
       case 'DELETE':
         return successResponse(200, db.delete(routeParts[routeParts.length - 2], parseInt(lastPart)))
-      
+
       default:
         return errorResponse(405, 'Method not allowed');
     }
   } else if (!isNaN(parseInt(lastPart))) {
     return successResponse(200, db.find(routeParts[routeParts.length - 2], parseInt(lastPart)))
-  } 
+  }
   switch (route) {
     case '/api/ping':
       return successResponse(200, {

@@ -6,6 +6,7 @@ export class FormFactory {
     this.form = {
       id: null,
       title: 'Test Form',
+      published: false,
       fields: [],
       createdAt: null,
       updatedAt: null
@@ -106,12 +107,16 @@ export class FormFactory {
     this.form.fields.push(field);
   }
 
-
+  public setPublished(published: boolean) {
+    this.form.published = published;
+    return this;
+  }
 
   private resetForm() {
     this.form = {
       id: null,
       title: 'Test Form',
+      published: false,
       createdAt: null,
       updatedAt: null,
       fields: []

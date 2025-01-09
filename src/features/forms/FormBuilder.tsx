@@ -1,7 +1,7 @@
 import { Form } from "@/types/models/form";
 import { FormEditor } from "./components/FormEditor/FormEditor";
 import { FormPreview } from "./components/FormPreview";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { FormFactory } from "@/mocks/formFactory";
 import { useParams } from "react-router";
 import api from "@/lib/api";
@@ -17,16 +17,14 @@ export const FormBuilder = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const updateForm = useCallback((form: Form) => {
-    setFormData(form);
-  }, []);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleSubmit = useCallback(async () => {
     try {
       setIsSaving(true);
-      const response = await handleSave();
+      const response = await handleSave(true);
       if (response?.data)
-        await navigate(`/form/${id}`);
+        await navigate(`/form/${response.data.id}`);
     } catch (error) {
       console.error(error);
       setError('Failed to save form');
@@ -35,13 +33,35 @@ export const FormBuilder = () => {
     }
   }, [formData]);
 
-  const handleSave = useCallback(async () => {
+  const handleSave = useCallback(async (manualSave: boolean = false) => {
+    if (!formData) return;
+    if (!formData.title && !formData.fields) return;
     if (id) {
-      return await api.put(`/api/forms/${id}`, formData);
+      return await api.put<Form>(`/api/forms/${formData.id || id}`, { ...formData, args: { manualSave } });
     } else {
-      return await api.post(`/api/forms`, formData);
+      return await api.post<Form>(`/api/forms`, { ...formData, args: { manualSave } });
     }
   }, [formData, id]);
+
+  const updateForm = useCallback((form: Form) => {
+    setFormData(prev => { return { ...prev, ...form } });
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const response = await handleSave();
+        if (response?.data) {
+          setFormData(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }, 2000);
+  }, [handleSave]);
+
 
   useEffect(() => {
     const fetchFormData = async () => {
@@ -66,6 +86,14 @@ export const FormBuilder = () => {
     }
     fetchFormData();
   }, [id]);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (<>
     <div className="flex flex-col gap-4 justify-center items-center">
