@@ -7,7 +7,9 @@ import { useParams } from "react-router";
 import api from "@/lib/api";
 import { LoadSpinner } from '@/components/ui/Loader';
 import { useNavigate } from "react-router";
-
+import { Button } from "@/components/ui/Button";
+import XMarkIcon from "@/assets/icons/xmark.svg";
+import { cn } from "@/utils/cn";
 
 export const FormBuilder = () => {
   const { id } = useParams();
@@ -16,6 +18,7 @@ export const FormBuilder = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -96,12 +99,12 @@ export const FormBuilder = () => {
   }, []);
 
   return (<>
-    <div className="flex flex-col gap-4 justify-center items-center">
+    <div className="flex flex-col gap-4 justify-center items-center overflow-x-hidden">
       {error && <div className="text-red-500">{error}</div>}
       {formData ? <>
         <div className="flex flex-row justify-between items-start gap-4 w-full p-4 divide-x-2 divide-border fade-in">
           <FormEditor form={formData} updateForm={updateForm} />
-          <FormPreview form={formData} />
+          <FormPreview form={formData} isOpen={isPreviewOpen} />
         </div>
         <div>
           <button disabled={isSaving} onClick={() => handleSubmit()}
@@ -111,6 +114,13 @@ export const FormBuilder = () => {
       </> : null}
     </div>
     {loading && <div className="flex flex-col gap-4 items-center justify-center inset-0 bg-background/50 w-screen h-screen fixed z-50"><LoadSpinner /></div>}
+
+    <div className="fixed sm:hidden bottom-0 z-50">
+      <Button
+        onClick={() => setIsPreviewOpen(!isPreviewOpen)}
+        className={cn("fixed bg-primary hover:bg-primary-hover transition-all duration-300 text-white z-50 rounded-full p-2 active:bg-primary-active sm:hidden bottom-4 shadow-md", isPreviewOpen ? 'left-4 w-10 h-10' : 'left-[calc(100%-6rem)] w-20 h-10')}
+      >{isPreviewOpen ? <img src={XMarkIcon} alt="Close" width={24} height={24} /> : 'Preview'}</Button>
+    </div>
   </>
   );
 };

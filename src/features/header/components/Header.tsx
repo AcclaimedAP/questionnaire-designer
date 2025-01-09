@@ -3,7 +3,6 @@ import { Container } from '@/components/layout/Container'
 
 export const Header = () => {
   const items = [
-    { label: 'Home', href: '/' },
     {
       label: 'See all forms', href: '/form'
     },

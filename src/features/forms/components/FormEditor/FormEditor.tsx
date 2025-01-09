@@ -34,7 +34,7 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
     setFields(prev => {
       const newFields = prev.map((f, i) => i === index ? field : f);
       if ((field.type === FormFieldType.CHECKBOX || field.type === FormFieldType.RADIO || field.type === FormFieldType.DROPDOWN) && field.options?.length === 0) {
-        newFields[index].options = ["Option 1"];
+        newFields[index].options = ["New Option"];
       }
       return newFields;
     });
@@ -64,7 +64,7 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 w-full p-4">
+    <div className="flex flex-col gap-4 w-full p-0 sm:p-4">
       <h1 className="text-2xl font-bold" onClick={() => console.log(fields)}>Form Editor</h1>
       <div className="flex flex-col gap-4">
         <Input
