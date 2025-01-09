@@ -11,7 +11,7 @@ export const MultiInput = ({ type, label, options, value, onChange, ...props }: 
 const RadioInput = ({ type, label, options, value, onChange, ...props }: { type: string, label: string, options: string[], value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void } & HtmlHTMLAttributes<HTMLDivElement>) => {
   return options.map((option, index) => {
     return <div key={index} className="flex flex-row gap-2">
-      <input type={type} value={option} name={label} onChange={onChange} {...props} />
+      <input type={type} value={option} name={label} onChange={onChange} checked={value === option} {...props} />
       <label htmlFor={label}>{option}</label>
     </div>
   })

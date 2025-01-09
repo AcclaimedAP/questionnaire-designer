@@ -65,7 +65,7 @@ export const FormEditor = ({ form, updateForm }: { form: Form, updateForm: (form
 
   return (
     <div className="flex flex-col gap-4 w-full p-4">
-      <h1 className="text-2xl font-bold">Form Editor</h1>
+      <h1 className="text-2xl font-bold" onClick={() => console.log(fields)}>Form Editor</h1>
       <div className="flex flex-col gap-4">
         <Input
           type="textarea"
